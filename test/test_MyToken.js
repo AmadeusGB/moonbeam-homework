@@ -45,5 +45,21 @@ contract('MyToken', accounts => {
         assert.equal(balance1, 0, 'accounts[1] balance is wrong');
         const balance2 = await token.balanceOf.call(accounts[2]);
         assert.equal(balance2, amountTransfer, 'accounts[2] balance is wrong');
+    });
+
+    // Set an allowance to an account, increase allowance,check
+    it("increase allowance check", async () => {
+        const amountAllow = "10000000000000000000";
+        const doubleamountAllow = "20000000000000000000";
+
+        // Approve accounts[1] to spend from accounts[0]
+        await token.approve(accounts[1], amountAllow, { from: accounts[0] });
+        const allowance = await token.allowance.call(accounts[0], accounts[1]);
+        assert.equal(allowance, amountAllow, 'allowance is wrong');
+
+        // increase allowance and check
+        await token.increaseAllowance(accounts[1], amountAllow, { from: accounts[0] });
+        const allowance_now = await token.allowance.call(accounts[0], accounts[1]);
+        assert.equal(allowance_now, doubleamountAllow, 'allowance check is wrong');
     })
 });
